@@ -1,60 +1,29 @@
 package widget
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
+import com.lt.load_the_image.rememberImagePainter
 import entity.VideoData
-import io.kamel.core.Resource
-import io.kamel.core.config.KamelConfig
-import io.kamel.core.config.takeFrom
-import io.kamel.image.KamelImage
-import io.kamel.image.config.Default
-import io.kamel.image.config.LocalKamelConfig
-import io.kamel.image.config.resourcesFetcher
-import io.kamel.image.lazyPainterResource
-import java.net.URL
+import utils.ClutterUtils.encodeOnlyChinese
+import vm.HomeViewModel
 
 @Composable
-fun VideoItem(videoData: VideoData) {
-    println(videoData.cover)
+fun VideoItem(videoData: VideoData, vm: HomeViewModel) {
 
-    val desktopConfig = KamelConfig {
-        takeFrom(KamelConfig.Default)
-        // Available only on Desktop.
-        resourcesFetcher()
-    }
-    Column {
-//        ImageAsyncImageUrl(
-//            url = "https://api.pingcc.cn/video/img/巨蟒1/巨蟒1.jpg",
-//            imageCallback = ImageCallback {
-//                Image(
-//                    modifier = Modifier
-//                        .size(40.dp),
-//                    painter = it,
-//                    contentDescription = videoData.title
-//                )
-//            }
-//        )
-        CompositionLocalProvider(LocalKamelConfig provides desktopConfig) {
-            when (val resource = lazyPainterResource(data = URL("https://api.pingcc.cn/video/img/100/100.jpg"))) {
-                is Resource.Failure -> {
-
-                }
-
-                is Resource.Loading -> {
-
-                }
-
-                is Resource.Success -> {
-                    Image(
-                        painter = resource.value,
-                        contentDescription = ""
-                    )
-                }
-            }
-        }
+    Column(
+        modifier = Modifier
+            .clickable { vm.click(videoData) }
+    ) {
+        val url = encodeOnlyChinese(videoData.cover, Charsets.UTF_8)
+        println("url: $url")
+        Image(
+            painter = rememberImagePainter(url),
+            contentDescription = videoData.title,
+        )
         Text(videoData.title)
     }
 }

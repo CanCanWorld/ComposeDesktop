@@ -17,9 +17,9 @@ import widget.VideoItem
 
 @Composable
 fun HomePage() {
-    val vm = HomeViewModel()
+    val vm = HomeViewModel
     var keyword by remember { mutableStateOf("") }
-    var videos by remember { mutableStateOf(mutableStateListOf<VideoData>()) }
+    val videos by remember { mutableStateOf(mutableStateListOf<VideoData>()) }
 
     Column(
         modifier = Modifier
@@ -49,7 +49,6 @@ fun HomePage() {
             Button(
                 onClick = {
                     vm.search(keyword) {
-                        println(it)
                         videos.clear()
                         videos.addAll(it)
                     }
@@ -66,7 +65,7 @@ fun HomePage() {
         Text(keyword)
         LazyVerticalGrid(columns = GridCells.Fixed(3)) {
             items(videos.size) {
-                VideoItem(videos[it])
+                VideoItem(videos[it], vm)
             }
         }
     }
