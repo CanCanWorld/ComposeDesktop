@@ -28,6 +28,7 @@ kotlin {
                 implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 //                implementation("io.github.succlz123:compose-imageloader-desktop:0.0.2")
                 implementation ("com.github.ltttttttttttt:load-the-image:1.0.2")
+//                implementation ("net.java.dev.jna:jna:5.3.1")
             }
         }
         val jvmTest by getting

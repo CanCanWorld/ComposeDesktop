@@ -1,5 +1,6 @@
 package vm
 
+import androidx.compose.runtime.mutableStateListOf
 import entity.Video
 import entity.VideoData
 import http.ApiService
@@ -7,19 +8,19 @@ import http.ProvideRetrofit
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import route.Route
-import route.RouteModel
 
 object HomeViewModel {
 
-    fun search(keyword: String, callback: (List<VideoData>) -> Unit) {
+    val videos = mutableStateListOf<VideoData>()
+
+    fun search(keyword: String, page: Int, update: (List<VideoData>) -> Unit) {
         println(keyword)
         val apiService = ProvideRetrofit.retrofit.create(ApiService::class.java);
-        val call = apiService.getVideo(keyword, 1, 30)
+        val call = apiService.getVideo(keyword, page, 30)
         call.enqueue(object : Callback<Video> {
             override fun onResponse(call: Call<Video>, response: Response<Video>) {
-                response.body()?.data?.let { videos ->
-                    callback(videos)
+                response.body()?.data?.let { v ->
+                    update(v)
                 }
             }
 
@@ -29,8 +30,8 @@ object HomeViewModel {
         })
     }
 
-    fun click(videoData: VideoData) {
-        RouteModel.NavHome()
+    fun click(videoData: VideoData, navToChapter: () -> Unit) {
         ChapterViewModel.videoData = videoData
+        navToChapter()
     }
 }
